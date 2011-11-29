@@ -10,15 +10,22 @@
 
 #include <allegro.h>
 #include "Point.h"
+#include "Thread.h"
 
 #define TRANSPARENTE makecol (255 ,0 ,255)
+#define subiu 1
+#define desceu -1
+#define direita 2
+#define esquerda -2
 
-class Ninman : public Point {
+class Ninman : public Point, public Thread {
 public:
     Ninman();
     Ninman(const Ninman& orig);
     virtual ~Ninman();
     void loadBitmaps(int color);
+    void setNextMove (int x);
+    int getNextMove ();
     BITMAP* direita1;
     BITMAP* direita2;
     BITMAP* direita3;
@@ -43,6 +50,12 @@ public:
     BITMAP* baixo4;
     BITMAP* baixo5;
     BITMAP* baixo6;
+
+
+private:
+    void LerMovimento();
+    int NextMove;
+    void run();
 };
 
 #endif	/* NINMAN_H */

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Thread.h"
 
 Thread::Thread() {
@@ -17,7 +19,6 @@ void Thread::Start() {
         int nRet;
 
         if (pthread_create(&m_threadId, NULL, entryPoint, this) != 0) {
-                // throw an error
         }
 }
 

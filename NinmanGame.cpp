@@ -1,28 +1,29 @@
 #include "NinmanGame.h"
 
 NinmanGame::NinmanGame() {
+    clear(screen);
     this->powertime = 0;
+    this->sound = Sound();
     this->power = false;
     this->vida = 3;
     this->sentido = esquerda;
     this->pontos = 0;
     this->sentido2 = 0;
-    LoadPlayer();
-    clear(screen);
-    venceu = 0;
-    Inicio();
-    this->run();
-    //conf.RefreshScore(pontos, player.nome);
+    this->fruit = false;
+    this->tfruit = 0;
+    this->endwait = clock() + 0.01 * CLOCKS_PER_SEC;
+    this->venceu = 0;
+    this->LoadPlayer();
+    this->Inicio();
+    this->Start();
+    this->Wait();
 }
 
 void NinmanGame::DeleteFruit() {
-    for (int a = 0; a < linhas; a++) {
-        for (int b = 0; b < colunas; b++) {
-            if (matriz[a][b] == 'x') {
+    for (int a = 0; a < linhas; a++)
+        for (int b = 0; b < colunas; b++)
+            if (matriz[a][b] == 'x')
                 matriz[a][b] = '0';
-            }
-        }
-    }
 }
 
 void NinmanGame::setNinmanPosition() {
@@ -36,22 +37,21 @@ void NinmanGame::setNinmanPosition() {
 }
 
 void NinmanGame::Inicio() {
-    LoadLab(GetLab(player));
-    setNinmanPosition();
-    setGhostsPositions();
+    this->LoadLab(GetLab(player));
+    this->setNinmanPosition();
+    this->setGhostsPositions();
     this->ninman.loadBitmaps(player.Ninman_color);
     this->ghost.setBitmap(0, 0);
     this->ghost1.setBitmap(24, 0);
     this->ghost2.setBitmap(48, 0);
     this->ghost3.setBitmap(0, 23);
     this->ghost4.setBitmap(24, 23);
-    DrawLab();
+    this->DrawLab();
     BITMAP * temp = load_bitmap("Imagens/GetReady.bmp", NULL);
     draw_sprite(screen, temp, 200, 300 - 43);
     destroy_bitmap(temp);
-    SAMPLE * abertura = load_sample("Sound/opening_song.wav");
-    play_sample(abertura, 255, 0, 1000, 0);
-    rest(4000);
+    this->sound.play("opening");
+    rest(3000);
 }
 
 void NinmanGame::NewFruit() {
@@ -115,43 +115,6 @@ std::list<Point> NinmanGame::calcPath() {
         shortest = -1;
     }
     return ghost_path;
-}
-
-void NinmanGame::GameOptions() {
-
-    int y = 220;
-    DrawOptions(y);
-    while (true) {
-        clear_keybuf();
-        readkey();
-        if (key[KEY_DOWN]) {
-            y = y + 55;
-            {
-                if (y > 330)
-                    y = 220;
-            }
-        }
-        if (key[KEY_UP]) {
-            y = y - 55;
-            {
-                if (y < 220)
-                    y = 330;
-            }
-        }
-        if (key[KEY_ENTER]) {
-            if (y == 275) {
-                //SaveGame();
-                venceu = -2;
-            }
-            if (y == 330) {
-
-                DestroyerPlayer();
-                venceu = -2;
-            }
-            break;
-        }
-        DrawOptions(y);
-    }
 }
 
 void NinmanGame::DestroyerPlayer() {
@@ -303,20 +266,7 @@ Point NinmanGame::RandomMove(Point ghost) {
     }
     return ghost;
 }
-*/
-
-void NinmanGame::DrawOptions(int y) {
-
-    DrawLab();
-    BITMAP * pacman;
-    BITMAP * menu;
-    menu = load_bitmap("Imagens/GameMenu.bmp", NULL);
-    pacman = load_bitmap("Imagens/pacman.bmp", NULL);
-    draw_sprite(screen, menu, 400 - 163, 350 - 153);
-    draw_sprite(screen, pacman, 215, y);
-    destroy_bitmap(menu);
-    destroy_bitmap(pacman);
-}
+ */
 
 void NinmanGame::LoadPlayer() {
     std::ifstream x;
@@ -332,7 +282,6 @@ const char* NinmanGame::GetLab(PLAYER player) {
     temp = "Labirintos/";
     temp += player.lab;
     temp += ".txt";
-
     return temp.c_str();
 }
 
@@ -341,7 +290,6 @@ bool NinmanGame::CheckWinner() {
     for (int a = 0; a < linhas; a++) {
         for (int b = 0; b < colunas; b++) {
             if (matriz[a][b] == '2') {
-
                 return false;
             }
         }
@@ -382,7 +330,6 @@ void NinmanGame::setGhostsPositions() {
 }
 
 int NinmanGame::Mover(int NextMove) {
-    SAMPLE * cumeu = load_sample("Sound/eating.short.wav");
     if (NextMove == direita) {
         if (ninman.y + 1 < colunas) {
             if (matriz[ninman.x][ninman.y + 1] != '1') {
@@ -429,7 +376,7 @@ int NinmanGame::Mover(int NextMove) {
                     pontos = pontos + 150;
                 if (matriz[ninman.x][ninman.y] == '2') {
                     pontos = pontos + 10;
-                    play_sample(cumeu, 255, 0, 1000, 0);
+                    //this->sound.play("eat");
                 }
                 if (ninman.y == colunas - 1)
                     ninman.y = 0;
@@ -446,7 +393,7 @@ int NinmanGame::Mover(int NextMove) {
                 ninman.x = ninman.x - 1;
                 if (matriz[ninman.x][ninman.y] == '2') {
                     pontos = pontos + 10;
-                    play_sample(cumeu, 255, 0, 1000, 0);
+                    //this->sound.play("eat");
                 }
                 if (matriz[ninman.x][ninman.y] == '3')
                     this->power = true;
@@ -464,17 +411,17 @@ int NinmanGame::Mover(int NextMove) {
                 matriz[ninman.x][ninman.y] = '0';
                 ninman.y = ninman.y - 1;
                 if (matriz[ninman.x][ninman.y] == '2') {
-                    play_sample(cumeu, 255, 0, 1000, 0);
+                    //play_sample(cumeu, 255, 0, 1000, 0);
+                    pontos = pontos + 10;
                 }
+                if (matriz[ninman.x][ninman.y] == '3')
+                    this->power = true;
+                if (matriz[ninman.x][ninman.y] == 'x')
+                    pontos = pontos + 150;
+                if (ninman.y == 0)
+                    ninman.y = colunas - 1;
+                matriz[ninman.x][ninman.y] = 'p';
             }
-            pontos = pontos + 10;
-            if (matriz[ninman.x][ninman.y] == '3')
-                this->power = true;
-            if (matriz[ninman.x][ninman.y] == 'x')
-                pontos = pontos + 150;
-            if (ninman.y == 0)
-                ninman.y = colunas - 1;
-            matriz[ninman.x][ninman.y] = 'p';
         }
     }
 
@@ -486,7 +433,7 @@ int NinmanGame::Mover(int NextMove) {
                 ninman.x = ninman.x + 1;
                 if (matriz[ninman.x][ninman.y] == '2') {
                     pontos = pontos + 10;
-                    play_sample(cumeu, 255, 0, 1000, 0);
+                    //play_sample(cumeu, 255, 0, 1000, 0);
                 }
                 if (matriz[ninman.x][ninman.y] == '3')
                     this->power = true;
@@ -502,6 +449,7 @@ int NinmanGame::Mover(int NextMove) {
 
     return NextMove;
 }
+
 /*
 void NinmanGame::MoverFantasma5() {
     int iSecret = rand() % 4;
@@ -597,7 +545,7 @@ void NinmanGame::MoverFantasma5() {
         }
     }
 }
-*/
+ */
 void NinmanGame::LoadLab(const char* file_name) {
     std::ifstream arquivo;
     arquivo.open(file_name);
@@ -616,19 +564,6 @@ void NinmanGame::LoadLab(const char* file_name) {
     }
     colunas = matriz[0].size();
     delete linha;
-}
-
-int NinmanGame::LerMovimento(int NextMove) {
-    if (key[KEY_DOWN])
-        NextMove = desceu;
-    if (key[KEY_UP])
-        NextMove = subiu;
-    if (key[KEY_LEFT])
-        NextMove = esquerda;
-    if (key[KEY_RIGHT])
-        NextMove = direita;
-
-    return NextMove;
 }
 
 void NinmanGame::DrawLab() {
@@ -774,7 +709,7 @@ void NinmanGame::DrawLab() {
         }
     }
     char msg[1024];
-    char * temp = new char [32];
+    char temp [32];
     memset(msg, 0, 1024);
     strcpy(msg, "Pontos: ");
     memset(temp, 0, 32);
@@ -795,29 +730,23 @@ void NinmanGame::DrawLab() {
 }
 
 void NinmanGame::run() {
-
-    int Nextmove = 0, tfruit = 0;
-    SAMPLE * siren = load_sample("Sound/siren.wav");
-    std::list <Point> ghost_path; //, pilha1, pilha2, pilha3;
-    bool reset;
-    bool fruit = false;
-    clock_t endwait = clock() + 0.01 * CLOCKS_PER_SEC;
+    //Start reading user input
+    this->ninman.Start();
     while (venceu == 0) {
         DrawLab();
-        Nextmove = LerMovimento(Nextmove);
         if (clock() > endwait) {
-            Nextmove = Mover(Nextmove);
+            ninman.setNextMove(Mover(ninman.getNextMove()));
             reset = Venceu();
             if (reset) {
                 //pilha1.clear();
                 //pilha2.clear();
                 //pilha3.clear();
-                stop_sample(siren);
+                this->sound.stop("siren");
                 sentido = esquerda;
                 if (vida > 0) {
                     Inicio();
                     ghost_path.clear();
-                    play_sample(siren, 255, 0, 1000, true);
+                    this->sound.play("siren", true);
                 }
             }
             if (!fruit)
@@ -857,12 +786,15 @@ void NinmanGame::run() {
                     this->ghost4.setBitmap(24, 23);
                 }
             }
-            endwait = clock() + 0.01 * CLOCKS_PER_SEC;
+            endwait = clock() + 0.2 * CLOCKS_PER_SEC;
         }
         if (key[KEY_ESC]) {
-            stop_sample(siren);
-            GameOptions();
-            play_sample(siren, 255, 0, 1000, true);
+            this->sound.stop("siren");
+            if (NinmanGameGraph::DrawGameOptions() > 230) {
+                this->venceu = -2;
+                DestroyerPlayer();
+            }
+            this->sound.play("siren", true);
         }
     }
 }

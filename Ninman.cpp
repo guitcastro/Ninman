@@ -97,3 +97,28 @@ void Ninman::loadBitmaps(int color) {
 
     destroy_bitmap(sprite);
 }
+
+void Ninman::run() {
+    LerMovimento();
+}
+
+void Ninman::LerMovimento() {
+    while (true) {
+        if (key[KEY_DOWN])
+            this->NextMove = desceu;
+        if (key[KEY_UP])
+            this->NextMove = subiu;
+        if (key[KEY_LEFT])
+            this->NextMove = esquerda;
+        if (key[KEY_RIGHT])
+            this->NextMove = direita;
+    }
+}
+
+void Ninman::setNextMove(int x) {
+    this->NextMove = x;
+}
+
+int Ninman::getNextMove() {
+    return this->NextMove;
+}

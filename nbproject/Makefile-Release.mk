@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/Sound.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/Point.o \
 	${OBJECTDIR}/NinmanMenu.o \
@@ -75,6 +76,11 @@ ${OBJECTDIR}/main.o: main.cc
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cc
+
+${OBJECTDIR}/Sound.o: Sound.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Sound.o Sound.cpp
 
 ${OBJECTDIR}/Thread.o: Thread.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -13,6 +13,7 @@
       <itemPath>Player.h</itemPath>
       <itemPath>Point.h</itemPath>
       <itemPath>Score.h</itemPath>
+      <itemPath>Sound.h</itemPath>
       <itemPath>Thread.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -27,6 +28,7 @@
       <itemPath>Player.cpp</itemPath>
       <itemPath>Point.cpp</itemPath>
       <itemPath>Score.cpp</itemPath>
+      <itemPath>Sound.cpp</itemPath>
       <itemPath>Thread.cpp</itemPath>
       <itemPath>main.cc</itemPath>
     </logicalFolder>
