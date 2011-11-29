@@ -329,124 +329,72 @@ void NinmanGame::setGhostsPositions() {
     }
 }
 
-int NinmanGame::Mover(int NextMove) {
-    if (NextMove == direita) {
-        if (ninman.y + 1 < colunas) {
-            if (matriz[ninman.x][ninman.y + 1] != '1') {
-                sentido = direita;
-                NextMove = 0;
-            }
-        }
+int NinmanGame::getCoordinateType(int x, int y) {
+    //invalid coordinate
+    if (y >= colunas || x >= linhas || x < 0 || y < 0 || matriz[x][y] == '1')
+        return -1;
+    if (matriz[ninman.x][ninman.y] == '0')
+        return 0;
+    if (matriz[ninman.x][ninman.y] == 'x')
+        return 1;
+    if (matriz[ninman.x][ninman.y] == '2')
+        return 2;
+    if (matriz[ninman.x][ninman.y] == '3')
+        return 3;
+}
+
+int NinmanGame::move(int NextMove) {
+    if (NextMove != 0) {
+        int tempSentido = sentido;
+        if (NextMove == direita && getCoordinateType(ninman.x, ninman.y + 1) >= 0)
+            sentido = direita;
+        else if (NextMove == subiu && getCoordinateType(ninman.x - 1, ninman.y) >= 0)
+            sentido = subiu;
+        else if (NextMove == esquerda && getCoordinateType(ninman.x, ninman.y - 1) >= 0)
+            sentido = esquerda;
+        else if (NextMove == desceu && getCoordinateType(ninman.x + 1, ninman.y) >= 0)
+            sentido = desceu;
+        //sentido has changed, pre-move worked
+        if (tempSentido != sentido)
+            NextMove = 0;
     }
+    if (sentido == direita && getCoordinateType(ninman.x, ninman.y + 1) >= 0)
+        ninman.y += 1;
+    else if (sentido == subiu && getCoordinateType(ninman.x - 1, ninman.y) >= 0)
+        ninman.x -= 1;
+    else if (sentido == esquerda && getCoordinateType(ninman.x, ninman.y - 1) >= 0)
+        ninman.y -= 1;
+    else if (sentido == desceu && getCoordinateType(ninman.x + 1, ninman.y) >= 0)
+        ninman.x += 1;
 
-    if (NextMove == subiu) {
-        if (ninman.x - 1 >= 0) {
-            if (matriz[ninman.x - 1][ninman.y] != '1') {
-                sentido = subiu;
-                NextMove = 0;
-            }
+    if (ninman.y == colunas - 1)
+        ninman.y = 0;
+    else if (ninman.x == 0)
+        ninman.x = linhas - 1;
+    else if (ninman.y == 0)
+        ninman.y = colunas - 1;
+    else if (ninman.x == linhas - 1)
+        ninman.x = 0;
+
+    switch (getCoordinateType(ninman.x, ninman.y)) {
+        case 0:
+            break;
+        case 1:
+            this->pontos += 150;
+            break;
+        case 2:
+        {
+            this->pontos += 10;
+            //this->sound.play("eat");
         }
+            break;
+        case 3:
+            this->power = true;
+            break;
+        default:
+            break;
     }
-    if (NextMove == esquerda) {
-        if (ninman.y - 1 >= 0) {
-            if (matriz[ninman.x][ninman.y - 1] != '1') {
-                sentido = esquerda;
-                NextMove = 0;
-            }
-        }
-    }
-    if (NextMove == desceu) {
-        if (ninman.x < linhas) {
-            if (matriz[ninman.x + 1][ninman.y] != '1') {
-                sentido = desceu;
-                NextMove = 0;
-            }
-        }
-    }
-
-
-    if (sentido == direita) {
-        if (ninman.y + 1 < colunas) {
-            if (matriz[ninman.x][ninman.y + 1] != '1') {
-                matriz[ninman.x][ninman.y] = '0';
-                ninman.y = ninman.y + 1;
-                if (matriz[ninman.x][ninman.y] == '3')
-                    this->power = true;
-                if (matriz[ninman.x][ninman.y] == 'x')
-                    pontos = pontos + 150;
-                if (matriz[ninman.x][ninman.y] == '2') {
-                    pontos = pontos + 10;
-                    //this->sound.play("eat");
-                }
-                if (ninman.y == colunas - 1)
-                    ninman.y = 0;
-                matriz[ninman.x][ninman.y] = 'p';
-
-            }
-        }
-    }
-
-    if (sentido == subiu) {
-        if (ninman.x - 1 >= 0) {
-            if (matriz[ninman.x - 1][ninman.y] != '1') {
-                matriz[ninman.x][ninman.y] = '0';
-                ninman.x = ninman.x - 1;
-                if (matriz[ninman.x][ninman.y] == '2') {
-                    pontos = pontos + 10;
-                    //this->sound.play("eat");
-                }
-                if (matriz[ninman.x][ninman.y] == '3')
-                    this->power = true;
-                if (matriz[ninman.x][ninman.y] == 'x')
-                    pontos = pontos + 150;
-                if (ninman.x == 0)
-                    ninman.x = linhas - 1;
-                matriz[ninman.x][ninman.y] = 'p';
-            }
-        }
-    }
-    if (sentido == esquerda) {
-        if (ninman.y - 1 >= 0) {
-            if (matriz[ninman.x][ninman.y - 1] != '1') {
-                matriz[ninman.x][ninman.y] = '0';
-                ninman.y = ninman.y - 1;
-                if (matriz[ninman.x][ninman.y] == '2') {
-                    //play_sample(cumeu, 255, 0, 1000, 0);
-                    pontos = pontos + 10;
-                }
-                if (matriz[ninman.x][ninman.y] == '3')
-                    this->power = true;
-                if (matriz[ninman.x][ninman.y] == 'x')
-                    pontos = pontos + 150;
-                if (ninman.y == 0)
-                    ninman.y = colunas - 1;
-                matriz[ninman.x][ninman.y] = 'p';
-            }
-        }
-    }
-
-    if (sentido == desceu) {
-        if (ninman.x < linhas) {
-            if (matriz[ninman.x + 1][ninman.y] != '1') {
-                matriz[ninman.x][ninman.y] = '0';
-
-                ninman.x = ninman.x + 1;
-                if (matriz[ninman.x][ninman.y] == '2') {
-                    pontos = pontos + 10;
-                    //play_sample(cumeu, 255, 0, 1000, 0);
-                }
-                if (matriz[ninman.x][ninman.y] == '3')
-                    this->power = true;
-                if (matriz[ninman.x][ninman.y] == 'x')
-                    pontos = pontos + 150;
-
-                if (ninman.x == linhas - 1)
-                    ninman.x = 0;
-                matriz[ninman.x][ninman.y] = 'p';
-            }
-        }
-    }
-
+    matriz[ninman.x][ninman.y] = 'p';
     return NextMove;
 }
 
@@ -735,7 +683,7 @@ void NinmanGame::run() {
     while (venceu == 0) {
         DrawLab();
         if (clock() > endwait) {
-            ninman.setNextMove(Mover(ninman.getNextMove()));
+            ninman.setNextMove(move(ninman.getNextMove()));
             reset = Venceu();
             if (reset) {
                 //pilha1.clear();
@@ -765,7 +713,7 @@ void NinmanGame::run() {
                 //ghost_path = this->calcPath();
                 //ghost = ghost_path.front();
                 //ghost_path.pop_front();
-                //pilha1 = MoverFantasma1(pilha1);
+                //pilha1 = moveFantasma1(pilha1);
                 //pilha2 = MoverFantasma2(pilha2);
                 //pilha3 = MoverFantasma3(pilha3);
                 //MoverFantasma5();

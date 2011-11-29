@@ -35,7 +35,7 @@ public:
         const char* lab;
         int Ninman_color;
         bool power, fruit;
-        int points, sentido, linhas, colunas, vida, powertime;
+        int points,linhas, colunas, vida, powertime;
     } PLAYER;
 
     NinmanGame();
@@ -70,12 +70,13 @@ private:
     void setGhostsPositions();
     void setNinmanPosition();
     bool alreadyInList(std::list<Point>);
-    int Mover(int NextMove);
+    int move(int NextMove);
     void PowerOn();
     void MoverFantasma5();
     void LoadLab(const char* file_name);
     void DrawLab();
     double ManhattanDist(Point a, Point b);
+    int getCoordinateType(int x, int y);
 
 };
 

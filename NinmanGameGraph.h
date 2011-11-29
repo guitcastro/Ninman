@@ -9,6 +9,10 @@
 #define	NINMANGAMEGRAPH_H
 
 #include "allegro.h"
+#include "Ninman.h"
+#include "Ghost.h"
+#include "NinmanConfig.h"
+#include <string>
 
 class NinmanGameGraph {
 public:

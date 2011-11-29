@@ -1,7 +1,6 @@
 #include "NinmanMenu.h"
 
 NinmanMenu::NinmanMenu() {
-
     install_keyboard();
     install_mouse();
     install_timer();
@@ -13,19 +12,14 @@ NinmanMenu::NinmanMenu() {
     else
         set_gfx_mode(GFX_AUTODETECT_WINDOWED, 800, 600, 0, 0);
     set_volume(conf.GetVolume(), 0);
-
     DrawMenu(220);
-
     MainMenu();
-
-
 }
 
 void NinmanMenu::Score() {
     BITMAP * fundo;
     BITMAP * menu;
     BITMAP * pacman;
-
     do {
         menu = load_bitmap("Imagens/Score.bmp", NULL);
         fundo = load_bitmap("Imagens/fundo.bmp", NULL);
@@ -125,7 +119,6 @@ void NinmanMenu::DrawLoadGame(int y) {
     textout_centre_ex(fundo, font, "A unfinished game was found", 400, 180, 255, -1);
     textout_centre_ex(fundo, font, "Do you want to start a New Game or Continue Load Game?", 400, 190, 255, -1);
     draw_sprite(screen, fundo, 0, 0);
-
 }
 
 int NinmanMenu::LoadGame() {
@@ -203,10 +196,8 @@ int NinmanMenu::MainMenu() {
     int y = 220;
     while (true) {
         readkey();
-
         if (key[KEY_ESC])
             return 0;
-
         if (key[KEY_DOWN]) {
             y = y + 55;
             if (y > 440)
@@ -244,9 +235,7 @@ int NinmanMenu::MainMenu() {
             }
 
             if (y == 440)
-
                 break;
-
             clear_keybuf();
         }
         DrawMenu(y);
@@ -265,7 +254,6 @@ void NinmanMenu::About() {
     draw_sprite(fundo, pacman, 215, 440);
     draw_sprite(screen, fundo, 0, 0);
     readkey();
-
     while (!key[KEY_ENTER] && !key[KEY_ESC]);
     destroy_bitmap(fundo);
     destroy_bitmap(menu);
@@ -330,7 +318,6 @@ void NinmanMenu::OptionMenu() {
                 break;
         }
         if (key[KEY_ESC])
-
             break;
         DrawOptionMenu(y);
     }
@@ -361,7 +348,6 @@ const char* NinmanMenu::GetVolumeString() {
             return "Imagens/volume_09.bmp";
         case 250:
             return "Imagens/volume_10.bmp";
-
     }
     return "";
 }
@@ -404,7 +390,6 @@ void NinmanMenu::DrawOptionMenu(int y) {
 }
 
 void NinmanMenu::DrawMenu(int y) {
-
     BITMAP * fundo;
     BITMAP * menu;
     BITMAP * pacman;
