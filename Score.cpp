@@ -7,33 +7,48 @@
 
 #include "Score.h"
 
-char* itoa(int value) {
-
-    char* result = new char [32];
-    char* ptr = result, *ptr1 = result, tmp_char;
-    int tmp_value;
-
-    do {
-        tmp_value = value;
-        value /= 10;
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * 10)];
-    } while (value);
-
-    // Apply negative sign
-    if (tmp_value < 0) *ptr++ = '-';
-    *ptr-- = '\0';
-    while (ptr1 < ptr) {
-        tmp_char = *ptr;
-        *ptr-- = *ptr1;
-        *ptr1++ = tmp_char;
-    }
-    return result;
-}
+//constructors and destructors
 
 Score::Score() {
     memset (this->playerName,0,32);
     this->playerPoints = 0;
 }
+
+Score::Score(const char * name, int points) {
+    memset (this->playerName,0,32);
+    memcpy(this->playerName,name,strlen(name)+1);
+    this->playerPoints = points;
+}
+
+Score::Score(const Score& orig){
+    memcpy(this->playerName,orig.playerName,strlen(orig.playerName)+1);
+    this->playerPoints = orig.playerPoints;
+}
+
+Score::~Score(){
+    delete this->playerName;
+}
+
+//setters
+
+void Score::setPlayerPoints (int playerPoints){
+    this->playerPoints = playerPoints;
+}
+
+void Score::setPlayerName(const char * playerName){
+    strcpy (this->playerName,playerName);
+}
+
+//getters
+
+int Score::getPlayerPoints (){
+    return this->playerPoints;
+}
+
+const char *  Score::getPlayerName (){
+    return this->playerName;
+}
+
 const char * Score::getScoreToString() {
     std::string separator = " - ";
     std::string s = this->playerName;
@@ -47,9 +62,3 @@ char * Score::getScoreToString() {
     retorno += playerPoints;
     return retorno;
 }*/
-
-Score::Score(const char * name, int points) {
-    memset (this->playerName,0,32);
-    memcpy(this->playerName,name,strlen(name)+1);
-    this->playerPoints = points;
-}

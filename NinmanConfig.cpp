@@ -1,138 +1,136 @@
-
 #include "NinmanConfig.h"
-#include <iostream>
-#include <list>
 
-NinmanConfig::NinmanConfig() {
+/*
+ * Hold the game data configuration
+ */
+NinmanConfig::config NinmanConfig::conf;
+
+/*
+ * Save the game configuration to a binary file
+ */
+void NinmanConfig::SaveConfig() {
+    std::ofstream configure;
+    configure.open("config.dat", std::ios::binary);
+    configure.write((char*) &conf, sizeof (conf));
+    configure.close();
+}
+
+/*
+ * Set a default game score
+ */
+void NinmanConfig::defaultScore() {
+    conf.scores[0] = (Score("Nin", 1000));
+    conf.scores[1] = (Score("Voix", 900));
+    conf.scores[2] = (Score("Max", 800));
+    conf.scores[3] = (Score("Jhony", 700));
+    conf.scores[4] = (Score("Jack", 600));
+    conf.scores[5] = (Score("Dagao", 500));
+    conf.scores[6] = (Score("Tux", 400));
+    conf.scores[7] = (Score("James", 300));
+    conf.scores[8] = (Score("Jessie", 200));
+    conf.scores[9] = (Score("Janie", 100));
+}
+
+/*
+ * Set default game configuration
+ */
+void NinmanConfig::DefaultConfig() {
+    defaultScore();
+    conf.fullscreen = false;
+    conf.ninman_color = 0;
+    conf.volume = 250;
+    conf.lab = 0;
+    SaveConfig();
+}
+
+/*
+ * Try to load a previous game configuration, if failed set the game
+ * to the default configuration and save it in a binary file
+ */
+void NinmanConfig::loadConfig() {
     std::ifstream configure("config.dat", std::ios::binary);
     if (configure.is_open()) {
-        configure.read((char*) this, sizeof (*this));
+        configure.read((char*) &conf, sizeof (conf));
     } else {
         DefaultConfig();
     }
     configure.close();
-
 }
 
+/*
+ * Refresh player score
+ */
 void NinmanConfig::RefreshScore(int playerPoints, const char * playerName) {
-    //precisa ser implementado
+    Score temp(playerName, playerPoints);
+    for (int i = 0; i < 10; i++) {
+        if (conf.scores[i].getPlayerPoints() < playerPoints) {
+            Score temp2 = conf.scores[i];
+            conf.scores[i].setPlayerName(temp.getPlayerName());
+            conf.scores[i].setPlayerPoints(temp.getPlayerPoints());
+            temp = temp2;
+        }
+    }
     SaveConfig();
 }
 
-void NinmanConfig::setDefaultScore() {
-    this->scores[0] = (Score("Nin", 1000));
-    this->scores[1] = (Score("Voix", 900));
-    this->scores[2] = (Score("Max", 800));
-    this->scores[3] = (Score("Jhony", 700));
-    this->scores[4] = (Score("Jack", 600));
-    this->scores[5] = (Score("Dagao", 500));
-    this->scores[6] = (Score("Tux", 400));
-    this->scores[7] = (Score("James", 300));
-    this->scores[8] = (Score("Jessie", 200));
-    this->scores[9] = (Score("Janie", 100));
+//getters
+
+bool NinmanConfig::getFullScreenOption() {
+    return conf.fullscreen;
 }
 
-void NinmanConfig::DefaultConfig() {
-    std::ofstream configure;
-    configure.open("config.dat", std::ios::binary);
-    this->setDefaultScore();
-    this->fullscreen = false;
-    this->Ninman_color = 0;
-    this->Volume = 250;
-    this->labs = 0;
-    configure.write((char*) this, sizeof (*this));
-    configure.close();
-}
+const char* NinmanConfig::getLab() {
+    switch (conf.lab) {
 
-bool NinmanConfig::GetFullScreenOption() {
-    return this->fullscreen;
-}
-
-void NinmanConfig::SaveConfig() {
-    std::ofstream configure;
-    configure.open("config.dat", std::ios::binary);
-    configure.write((char*) this, sizeof (*this));
-    configure.close();
-}
-
-void NinmanConfig::SetFullScreenOption(bool value) {
-    this->fullscreen = value;
-    SaveConfig();
-}
-
-int NinmanConfig::GetVolume() {
-    return this->Volume;
-}
-
-void NinmanConfig::SetLab(int x) {
-    this->labs = this->labs + x;
-    if (this->labs > 3)
-        this->labs = 0;
-    if (this->labs < 0)
-        this->labs = 3;
-    SaveConfig();
-
-}
-
-const char* NinmanConfig::GetLab() {
-    switch (this->labs) {
-        case 0:return "Classic";
-        case 1:return "Small";
-        case 2:return "Medium";
-        case 3:return "Larger";
+        case 0:return "Labirintos/Classic.txt";
+        case 1:return "Labirintos/Small.txt";
+        case 2:return "Labirintos/Medium.txt";
+        case 3:return "Labirintos/Larger.txt";
     }
     return "Classic";
 }
 
-void NinmanConfig::SetVolume(int value) {
-    if (value <= 250 && value >= 0) {
-        this->Volume = value;
-        SaveConfig();
-    }
+int NinmanConfig::getNimanColor() {
+    return conf.ninman_color;
 }
 
-const char* NinmanConfig::GetScore(int x) {
-    return this->scores[x].getScoreToString();
+const char* NinmanConfig::getScore(int index) {
+    return conf.scores[index].getScoreToString();
 }
 
-void NinmanConfig::SetNimanColor(int x) {
-    if (x < 0)
-        x = 75;
-    if (x > 75)
-        x = 0;
-    this->Ninman_color = x;
+int NinmanConfig::getVolume() {
+    return conf.volume;
+}
+
+//setters
+
+void NinmanConfig::setFullScreenOption(bool value) {
+
+    conf.fullscreen = value;
     SaveConfig();
 }
 
-int NinmanConfig::GetNimanColor() {
-    return this->Ninman_color;
+void NinmanConfig::setLab(int x) {
+    conf.lab = conf.lab + x;
+    if (conf.lab > 3)
+        conf.lab = 0;
+    if (conf.lab < 0)
+        conf.lab = 3;
+    SaveConfig();
 }
 
-char* NinmanConfig::itoa(int value, char* result, int base) {
-    // check that the base if valid
-    if (base < 2 || base > 36) {
-        *result = '\0';
-        return result;
-    }
-
-    char* ptr = result, *ptr1 = result, tmp_char;
-    int tmp_value;
-
-    do {
-        tmp_value = value;
-        value /= base;
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
-    } while (value);
-
-    // Apply negative sign
-    if (tmp_value < 0) *ptr++ = '-';
-    *ptr-- = '\0';
-    while (ptr1 < ptr) {
-        tmp_char = *ptr;
-        *ptr-- = *ptr1;
-        *ptr1++ = tmp_char;
-    }
-    return result;
+void NinmanConfig::setNimanColor(int value) {
+    conf.ninman_color += value;
+    if (conf.ninman_color < 0)
+        conf.ninman_color = 75;
+    if (conf.ninman_color > 75)
+        conf.ninman_color = 0;
+    SaveConfig();
 }
 
-
+void NinmanConfig::setVolume(int value) {
+    if (value <= 250 && value >= 0) {
+        conf.volume = value;
+        SaveConfig();
+    }
+}

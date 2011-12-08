@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   NinmanMenu.h
  * Author: guilherme
  *
@@ -15,8 +15,6 @@ public:
     NinmanMenu();
 
 private:
-    
-    NinmanConfig conf;
     void Score();
     void DrawStartGame(int y, std::string nome);
     std::string TextBox();

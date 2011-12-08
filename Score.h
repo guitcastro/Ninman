@@ -15,7 +15,19 @@ class Score {
 public:
     Score();
     Score(const char *, int);
+    Score(const Score& orig);
+    ~Score();
+
+    //getters
+
     const char * getScoreToString();
+    const char * getPlayerName ();
+    int getPlayerPoints ();
+
+    //setters
+
+    void setPlayerPoints (int playerPoints);
+    void setPlayerName (const char *);
 
 private:
     char  playerName [32] ;

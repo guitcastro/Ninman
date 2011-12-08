@@ -1,11 +1,13 @@
 #include "NinmanGame.h"
 
-NinmanGame::NinmanGame() {
+NinmanGame::NinmanGame(const char* player_name) {
+    //clear screen
     clear(screen);
+    //initialize game variable
+    this->player_name = player_name;
     this->powertime = 0;
-    this->sound = Sound();
-    this->power = false;
     this->vida = 3;
+    this->power = false;
     this->sentido = esquerda;
     this->pontos = 0;
     this->sentido2 = 0;
@@ -13,8 +15,8 @@ NinmanGame::NinmanGame() {
     this->tfruit = 0;
     this->endwait = clock() + 0.01 * CLOCKS_PER_SEC;
     this->venceu = 0;
-    this->LoadPlayer();
-    this->Inicio();
+    this->sound = Sound();
+    //start game
     this->Start();
     this->Wait();
 }
@@ -36,11 +38,12 @@ void NinmanGame::setNinmanPosition() {
             }
 }
 
-void NinmanGame::Inicio() {
-    this->LoadLab(GetLab(player));
+void NinmanGame::init() {
+    //NinmanConfig::getLab();
+    this->LoadLab(NinmanConfig::getLab());
     this->setNinmanPosition();
     this->setGhostsPositions();
-    this->ninman.loadBitmaps(player.Ninman_color);
+    this->ninman.loadBitmaps(NinmanConfig::getNimanColor());
     this->ghost.setBitmap(0, 0);
     this->ghost1.setBitmap(24, 0);
     this->ghost2.setBitmap(48, 0);
@@ -115,15 +118,6 @@ std::list<Point> NinmanGame::calcPath() {
         shortest = -1;
     }
     return ghost_path;
-}
-
-void NinmanGame::DestroyerPlayer() {
-
-    std::ofstream y;
-    y.open("Player.dat", std::ios::binary);
-    player.points = 0;
-    y.write((char*) & player, sizeof (player));
-    y.close();
 }
 
 bool NinmanGame::Venceu() {
@@ -267,23 +261,6 @@ Point NinmanGame::RandomMove(Point ghost) {
     return ghost;
 }
  */
-
-void NinmanGame::LoadPlayer() {
-    std::ifstream x;
-    x.open("Player.dat", std::ios::binary);
-    if (x.is_open()) {
-        x.read((char*) & player, sizeof (player));
-    }
-    x.close();
-}
-
-const char* NinmanGame::GetLab(PLAYER player) {
-    std::string temp;
-    temp = "Labirintos/";
-    temp += player.lab;
-    temp += ".txt";
-    return temp.c_str();
-}
 
 bool NinmanGame::CheckWinner() {
     bool venceu = true;
@@ -661,11 +638,11 @@ void NinmanGame::DrawLab() {
     memset(msg, 0, 1024);
     strcpy(msg, "Pontos: ");
     memset(temp, 0, 32);
-    NinmanConfig::itoa(pontos, temp, 10);
+    itoa(pontos, temp, 10);
     strcat(msg, temp);
     memset(temp, 0, 32);
     strcat(msg, "          Vidas:");
-    NinmanConfig::itoa(vida, temp, 10);
+    itoa(vida, temp, 10);
     strcat(msg, temp);
     textout_centre_ex(mapa, font, msg, (colunas * 26 / 2), linhas * 26 + 5, 255, -1);
     draw_sprite(screen, mapa, 400 - (colunas * 26 / 2), 300 - (linhas * 26 / 2) - 5);
@@ -678,6 +655,7 @@ void NinmanGame::DrawLab() {
 }
 
 void NinmanGame::run() {
+    this->init();
     //Start reading user input
     this->ninman.Start();
     while (venceu == 0) {
@@ -692,7 +670,7 @@ void NinmanGame::run() {
                 this->sound.stop("siren");
                 sentido = esquerda;
                 if (vida > 0) {
-                    Inicio();
+                    init();
                     ghost_path.clear();
                     this->sound.play("siren", true);
                 }
@@ -740,9 +718,35 @@ void NinmanGame::run() {
             this->sound.stop("siren");
             if (NinmanGameGraph::DrawGameOptions() > 230) {
                 this->venceu = -2;
-                DestroyerPlayer();
             }
             this->sound.play("siren", true);
         }
     }
+}
+
+char* itoa(int value, char* result, int base) {
+    // check that the base if valid
+    if (base < 2 || base > 36) {
+        *result = '\0';
+        return result;
+    }
+
+    char* ptr = result, *ptr1 = result, tmp_char;
+    int tmp_value;
+
+    do {
+        tmp_value = value;
+        value /= base;
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+    } while (value);
+
+    // Apply negative sign
+    if (tmp_value < 0) *ptr++ = '-';
+    *ptr-- = '\0';
+    while (ptr1 < ptr) {
+        tmp_char = *ptr;
+        *ptr-- = *ptr1;
+        *ptr1++ = tmp_char;
+    }
+    return result;
 }

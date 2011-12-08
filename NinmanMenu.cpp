@@ -1,21 +1,28 @@
 #include "NinmanMenu.h"
 
+/*
+ * Start Allegro and draw the game Menu
+ */
 NinmanMenu::NinmanMenu() {
+    NinmanConfig::loadConfig();
     install_keyboard();
     install_mouse();
     install_timer();
     if (install_sound(DIGI_AUTODETECT, MIDI_NONE, NULL) < 0)
         install_sound(DIGI_OSS, MIDI_NONE, NULL);
     set_color_depth(32);
-    if (conf.GetFullScreenOption())
+    if (NinmanConfig::getFullScreenOption())
         set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
     else
         set_gfx_mode(GFX_AUTODETECT_WINDOWED, 800, 600, 0, 0);
-    set_volume(conf.GetVolume(), 0);
+    set_volume(NinmanConfig::getVolume(), 0);
     DrawMenu(220);
     MainMenu();
 }
 
+/*
+ * Show players Scores
+ */
 void NinmanMenu::Score() {
     BITMAP * fundo;
     BITMAP * menu;
@@ -24,15 +31,16 @@ void NinmanMenu::Score() {
         menu = load_bitmap("Imagens/Score.bmp", NULL);
         fundo = load_bitmap("Imagens/fundo.bmp", NULL);
         pacman = load_bitmap("Imagens/pacman.bmp", NULL);
-        textout_centre_ex(menu, font, conf.GetScore(1), 163, 30, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(2), 163, 50, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(3), 163, 70, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(5), 163, 90, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(6), 163, 110, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(7), 163, 130, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(8), 163, 150, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(9), 163, 170, WHITE, -1);
-        textout_centre_ex(menu, font, conf.GetScore(10), 163, 190, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(0), 163, 30, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(1), 163, 50, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(2), 163, 70, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(3), 163, 90, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(4), 163, 110, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(5), 163, 130, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(6), 163, 150, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(7), 163, 170, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(8), 163, 190, WHITE, -1);
+        textout_centre_ex(menu, font, NinmanConfig::getScore(9), 163, 210, WHITE, -1);
         draw_sprite(fundo, menu, 400 - 164, 350 - 153);
         draw_sprite(fundo, pacman, 215, 440);
         draw_sprite(screen, fundo, 0, 0);
@@ -43,6 +51,9 @@ void NinmanMenu::Score() {
     } while (!key[KEY_ESC] && !key[KEY_ENTER]);
 }
 
+/*
+ * Draw player Enter name Scren
+ */
 void NinmanMenu::DrawStartGame(int y, std::string nome) {
     BITMAP * fundo;
     BITMAP * menu;
@@ -61,6 +72,9 @@ void NinmanMenu::DrawStartGame(int y, std::string nome) {
     destroy_bitmap(pacman);
 }
 
+/*
+ * Read user inputs
+ */
 std::string NinmanMenu::TextBox() {
     int y = 220 + 55;
     std::string edittext; // an empty string for editting
@@ -110,88 +124,6 @@ std::string NinmanMenu::TextBox() {
     } while (true); // end of game loop
 }
 
-void NinmanMenu::DrawLoadGame(int y) {
-    BITMAP* menu = load_bitmap("Imagens/LoadGame.bmp", NULL);
-    BITMAP * pacman = load_bitmap("Imagens/pacman.bmp", NULL);
-    BITMAP * fundo = load_bitmap("Imagens/fundo.bmp", NULL);
-    draw_sprite(fundo, menu, 400 - 163, 350 - 153);
-    draw_sprite(fundo, pacman, 215, y);
-    textout_centre_ex(fundo, font, "A unfinished game was found", 400, 180, 255, -1);
-    textout_centre_ex(fundo, font, "Do you want to start a New Game or Continue Load Game?", 400, 190, 255, -1);
-    draw_sprite(screen, fundo, 0, 0);
-}
-
-int NinmanMenu::LoadGame() {
-    int y = 220;
-    DrawLoadGame(y);
-    while (!key[KEY_ESC]) {
-        readkey();
-        if (key[KEY_DOWN]) {
-            y = y + 55;
-            if (y > 330)
-                y = 220;
-        }
-        if (key[KEY_UP]) {
-            y = y - 55;
-            if (y < 220)
-                y = 330;
-        }
-        if (key[KEY_ENTER]) {
-            if (y == 220)
-                return 1;
-            if (y == 275)
-                return -1;
-            if (y == 330)
-                return 0;
-        }
-        DrawLoadGame(y);
-    }
-    return 0;
-}
-
-bool NinmanMenu::CreatPlayer(const char * nome) {
-    std::ifstream x;
-    std::ofstream y;
-    NinmanGame::PLAYER player;
-
-    x.open("Player.dat", std::ios::binary);
-    if (x.is_open()) {
-        x.read((char*) & player, sizeof (player));
-        if (player.points <= 0) {
-            player.nome = nome;
-            player.Ninman_color = conf.GetNimanColor();
-            player.lab = conf.GetLab();
-            player.points = 0;
-        } else {
-            switch (LoadGame()) {
-                case 0:
-                    return false;
-                case 1:
-                    return true;
-                case -1:
-                    player.nome = nome;
-                    player.Ninman_color = conf.GetNimanColor();
-                    player.lab = conf.GetLab();
-                    player.points = 0;
-                    break;
-            }
-
-        }
-    } else {
-
-        player.nome = nome;
-        player.Ninman_color = conf.GetNimanColor();
-        player.lab = conf.GetLab();
-        player.points = 0;
-    }
-    x.close();
-    y.open("Player.dat", std::ios::binary);
-    y.write((char*) & player, sizeof (player));
-    y.close();
-    return true;
-
-}
-
 int NinmanMenu::MainMenu() {
     int y = 220;
     while (true) {
@@ -211,15 +143,10 @@ int NinmanMenu::MainMenu() {
         if (key[KEY_ENTER]) {
             if (y == 220) {
                 std::string player;
-                bool iniciar = false;
                 while (player == "")
                     player = TextBox();
                 if (player != "-1")
-                    iniciar = CreatPlayer(player.c_str());
-                if (iniciar) {
-                    NinmanGame();
-                    conf = NinmanConfig();
-                }
+                    NinmanGame(player.c_str());
             }
             if (y == 275) {
                 Score();
@@ -277,11 +204,11 @@ void NinmanMenu::OptionMenu() {
         }
         if (key[KEY_LEFT] || key[KEY_RIGHT]) {
             if (y == 220) {
-                if (conf.GetFullScreenOption())
-                    conf.SetFullScreenOption(false);
+                if (NinmanConfig::getFullScreenOption())
+                    NinmanConfig::setFullScreenOption(false);
                 else
-                    conf.SetFullScreenOption(true);
-                if (conf.GetFullScreenOption())
+                    NinmanConfig::setFullScreenOption(true);
+                if (NinmanConfig::getFullScreenOption())
                     set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
                 else
                     set_gfx_mode(GFX_AUTODETECT_WINDOWED, 800, 600, 0, 0);
@@ -289,27 +216,27 @@ void NinmanMenu::OptionMenu() {
             if (y == 275) {
 
                 if (key[KEY_LEFT]) {
-                    conf.SetVolume(conf.GetVolume() - 25);
+                    NinmanConfig::setVolume(NinmanConfig::getVolume() - 25);
                 }
                 if (key[KEY_RIGHT]) {
 
-                    conf.SetVolume(conf.GetVolume() + 25);
-                    set_volume(conf.GetVolume(), 0);
+                    NinmanConfig::setVolume(NinmanConfig::getVolume() + 25);
+                    set_volume(NinmanConfig::getVolume(), 0);
                 }
-                set_volume(conf.GetVolume(), 0);
+                set_volume(NinmanConfig::getVolume(), 0);
             }
             if (y == 330) {
                 if (key[KEY_LEFT])
-                    conf.SetNimanColor(conf.GetNimanColor() - 25);
+                    NinmanConfig::setNimanColor(-25);
                 if (key[KEY_RIGHT])
-                    conf.SetNimanColor(conf.GetNimanColor() + 25);
+                    NinmanConfig::setNimanColor(25);
 
             }
             if (y == 385) {
                 if (key[KEY_LEFT])
-                    conf.SetLab(-1);
+                    NinmanConfig::setLab(-1);
                 if (key[KEY_RIGHT])
-                    conf.SetLab(1);
+                    NinmanConfig::setLab(1);
             }
 
         }
@@ -324,7 +251,7 @@ void NinmanMenu::OptionMenu() {
 }
 
 const char* NinmanMenu::GetVolumeString() {
-    switch (conf.GetVolume()) {
+    switch (NinmanConfig::getVolume()) {
 
         case 0:
             return "Imagens/volume_00.bmp";
@@ -365,7 +292,7 @@ void NinmanMenu::DrawOptionMenu(int y) {
     fundo = load_bitmap("Imagens/fundo.bmp", NULL);
     som = load_bitmap(GetVolumeString(), NULL);
     menu = load_bitmap("Imagens/OptionMenu.bmp", NULL);
-    if (conf.GetFullScreenOption())
+    if (NinmanConfig::getFullScreenOption())
         rect(menu, 199, 30, 200 + 29, 30 + 25, WHITE);
 
     else
@@ -373,11 +300,11 @@ void NinmanMenu::DrawOptionMenu(int y) {
     pacman = load_bitmap("Imagens/pacman.bmp", NULL);
     textout_centre_ex(menu, font, "Use Left and Right arrow", 163, 285, 255, -1);
     textout_centre_ex(menu, font, "to change settings.", 163, 295, 255, -1);
-    textout_centre_ex(menu, font, conf.GetLab(), 175, 205, WHITE, -1);
+    textout_centre_ex(menu, font, NinmanConfig::getLab(), 175, 205, WHITE, -1);
     draw_sprite(menu, FS, 200, 30);
     draw_sprite(menu, som, 120, 76);
     draw_sprite(menu, temp, 180, 73 + 65);
-    rect(menu, 180 + conf.GetNimanColor(), 138, 181 + 25 + conf.GetNimanColor(), 138 + 25, WHITE);
+    rect(menu, 180 + NinmanConfig::getNimanColor(), 138, 181 + 25 + NinmanConfig::getNimanColor(), 138 + 25, WHITE);
     draw_sprite(fundo, menu, 400 - 163, 350 - 153);
     draw_sprite(fundo, pacman, 215, y);
     draw_sprite(screen, fundo, 0, 0);

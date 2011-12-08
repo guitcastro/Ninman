@@ -30,42 +30,30 @@
 class NinmanGame : public Thread {
 public:
 
-    typedef struct {
-        const char* nome;
-        const char* lab;
-        int Ninman_color;
-        bool power, fruit;
-        int points,linhas, colunas, vida, powertime;
-    } PLAYER;
-
-    NinmanGame();
+    NinmanGame(const char * player_name);
 
 private:
     std::string* matriz;
+    const char * player_name;
     Sound sound;
-    int venceu, vida, powertime, linhas, colunas, sentido, pontos, sentido2, tfruit ;
+    int venceu, vida, powertime, linhas, colunas, sentido, pontos, sentido2, tfruit;
     Ghost ghost, ghost1, ghost2, ghost3, ghost4;
     Ninman ninman;
     bool power, reset, fruit;
     std::list <Point> ghost_path; //, pilha1, pilha2, pilha3;;
     clock_t endwait;
-    PLAYER player;
 
     void run();
     void DeleteFruit();
-    void Inicio();
+    void init();
     void LoadMatriz();
     void NewFruit();
-    //std::list <PONTO> MoverFantasma1(std::list <PONTO> pilha1);
-    //std::list <PONTO> MoverFantasma3(std::list <PONTO> pilha3);
     std::list<Point> calcPath();
-    //std::list <PONTO> MoverFantasma2(std::list <PONTO> pilha2);
     void DestroyerPlayer();
     bool Venceu();
     Point RandomMove(Point Ghost);
     void EatGhost(int x);
     void LoadPlayer();
-    const char* GetLab(PLAYER player);
     bool CheckWinner();
     void setGhostsPositions();
     void setNinmanPosition();
@@ -77,8 +65,9 @@ private:
     void DrawLab();
     double ManhattanDist(Point a, Point b);
     int getCoordinateType(int x, int y);
-
 };
+
+char* itoa(int value, char* result, int base);
 
 #endif	/* NINMANGAME_H */
 

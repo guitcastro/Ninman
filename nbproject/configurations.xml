@@ -10,7 +10,6 @@
       <itemPath>NinmanGame.h</itemPath>
       <itemPath>NinmanGameGraph.h</itemPath>
       <itemPath>NinmanMenu.h</itemPath>
-      <itemPath>Player.h</itemPath>
       <itemPath>Point.h</itemPath>
       <itemPath>Score.h</itemPath>
       <itemPath>Sound.h</itemPath>
@@ -24,13 +23,12 @@
       <itemPath>NinmanConfig.cpp</itemPath>
       <itemPath>NinmanGame.cpp</itemPath>
       <itemPath>NinmanGameGraph.cpp</itemPath>
-      <itemPath>NinmanMenu.cc</itemPath>
-      <itemPath>Player.cpp</itemPath>
+      <itemPath>NinmanMenu.cpp</itemPath>
       <itemPath>Point.cpp</itemPath>
       <itemPath>Score.cpp</itemPath>
       <itemPath>Sound.cpp</itemPath>
       <itemPath>Thread.cpp</itemPath>
-      <itemPath>main.cc</itemPath>
+      <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Arquivos de recurso"

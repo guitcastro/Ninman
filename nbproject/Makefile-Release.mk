@@ -34,17 +34,16 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/Sound.o \
 	${OBJECTDIR}/Thread.o \
 	${OBJECTDIR}/Point.o \
-	${OBJECTDIR}/NinmanMenu.o \
+	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/NinmanConfig.o \
-	${OBJECTDIR}/Player.o \
 	${OBJECTDIR}/Score.o \
 	${OBJECTDIR}/Ninman.o \
 	${OBJECTDIR}/Ghost.o \
 	${OBJECTDIR}/NinmanGame.o \
+	${OBJECTDIR}/NinmanMenu.o \
 	${OBJECTDIR}/NinmanGameGraph.o
 
 
@@ -72,11 +71,6 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ninman: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ninman ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/main.o: main.cc 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cc
-
 ${OBJECTDIR}/Sound.o: Sound.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -92,20 +86,15 @@ ${OBJECTDIR}/Point.o: Point.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Point.o Point.cpp
 
-${OBJECTDIR}/NinmanMenu.o: NinmanMenu.cc 
+${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanMenu.o NinmanMenu.cc
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/NinmanConfig.o: NinmanConfig.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanConfig.o NinmanConfig.cpp
-
-${OBJECTDIR}/Player.o: Player.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Player.o Player.cpp
 
 ${OBJECTDIR}/Score.o: Score.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -126,6 +115,11 @@ ${OBJECTDIR}/NinmanGame.o: NinmanGame.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanGame.o NinmanGame.cpp
+
+${OBJECTDIR}/NinmanMenu.o: NinmanMenu.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanMenu.o NinmanMenu.cpp
 
 ${OBJECTDIR}/NinmanGameGraph.o: NinmanGameGraph.cpp 
 	${MKDIR} -p ${OBJECTDIR}
