@@ -16,48 +16,39 @@
 #include "Thread.h"
 #include "Sound.h"
 #include "NinManMap.h"
-#include <list>
+
+#include <vector>
 #include <stack>
 #include <math.h>
 #include <time.h>
 #include <pthread.h>
-#include <allegro.h>
-
 #define subiu 1
 #define desceu -1
 #define direita 2
 #define esquerda -2
-#define WHITE makecol(0, 0, 0)
-#define TRANSPARENTE makecol (255 ,0 ,255)
 
-class NinmanGame : public Thread {
+
+class NinmanGame :  public Thread {
 public:
 
     NinmanGame(const char * player_name);
-    virtual ~NinmanGame();
 
 private:
-    NinManMap * map;
 
-    Ghost* orangeGhost;
-    Ghost* blueGhost;
-    Ghost* redGhost;
-    Ghost* pinkGhost;
-    Ghost* greenGhost;
-    
     const char * player_name;
     Sound sound;
-    int venceu, vida, powertime, linhas, colunas, sentido, pontos, sentido2, tfruit;
-    int remainingDots;
-
+    int venceu, lifes, powertime, direction, points, nextDirection, tfruit;
+    Ghost orangeGhost, blueGhost, redGhost, purpleGhost, greenGhost;
     Ninman ninman;
     bool power, reset, fruit;
+    std::vector <Point> ghost_path;
     clock_t endwait;
 
     void run();
     void DeleteFruit();
     void init();
-    void LoadMatriz();
+    void NewFruit();
+    std::vector<Point> calcPath();
     void DestroyerPlayer();
     bool Venceu();
     Point RandomMove(Point Ghost);
@@ -66,10 +57,13 @@ private:
     bool CheckWinner();
     void setGhostsPositions();
     void setNinmanPosition();
+    bool alreadyInList(std::vector<Point>,Point);
     int move(int NextMove);
     void PowerOn();
     void MoverFantasma5();
+    void LoadLab(const char* file_name);
     void DrawLab();
+    double ManhattanDist(Point a, Point b);
     int getCoordinateType(int x, int y);
 };
 

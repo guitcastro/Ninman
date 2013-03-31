@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Ninman.o \
 	${OBJECTDIR}/Ghost.o \
 	${OBJECTDIR}/NinmanGame.o \
+	${OBJECTDIR}/NinManMap.o \
 	${OBJECTDIR}/NinmanMenu.o \
 	${OBJECTDIR}/NinmanGameGraph.o
 
@@ -51,8 +52,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-L/usr/lib64 -Wl,--export-dynamic -lalleg-4.2.3 -lalleg_unsharable
-CXXFLAGS=-L/usr/lib64 -Wl,--export-dynamic -lalleg-4.2.3 -lalleg_unsharable
+CCFLAGS=-L/usr/lib64 -Wl,--export-dynamic -lalleg
+CXXFLAGS=-L/usr/lib64 -Wl,--export-dynamic -lalleg
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -115,6 +116,11 @@ ${OBJECTDIR}/NinmanGame.o: NinmanGame.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanGame.o NinmanGame.cpp
+
+${OBJECTDIR}/NinManMap.o: NinManMap.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinManMap.o NinManMap.cpp
 
 ${OBJECTDIR}/NinmanMenu.o: NinmanMenu.cpp 
 	${MKDIR} -p ${OBJECTDIR}

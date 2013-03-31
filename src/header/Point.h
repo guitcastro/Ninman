@@ -14,12 +14,9 @@ public:
     Point(const Point& orig);
     Point(int x, int y);
     virtual ~Point();
-
-    void setPoint(Point p);
-
-
     int x;
     int y;
+    bool operator== (Point &point);
 };
 
 #endif	/* POINT_H */

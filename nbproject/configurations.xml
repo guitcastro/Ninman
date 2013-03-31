@@ -19,6 +19,8 @@
                    displayName="Arquivos de código-fonte"
                    projectFiles="true">
       <itemPath>Ghost.cpp</itemPath>
+      <itemPath>NinManMap.cpp</itemPath>
+      <itemPath>NinManMap.h</itemPath>
       <itemPath>Ninman.cpp</itemPath>
       <itemPath>NinmanConfig.cpp</itemPath>
       <itemPath>NinmanGame.cpp</itemPath>
@@ -55,7 +57,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-L/usr/lib64 -Wl,--export-dynamic -lalleg-4.2.3 -lalleg_unsharable</commandLine>
+          <commandLine>-L/usr/lib64 -Wl,--export-dynamic -lalleg</commandLine>
         </ccTool>
         <linkerTool>
           <linkerLibItems>

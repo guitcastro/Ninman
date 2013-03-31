@@ -1,5 +1,13 @@
 #include "NinmanGame.h"
 
+NinmanGame::~NinmanGame(){
+    delete this->orangeGhost;
+    delete this->blueGhost;
+    delete this->redGhost;
+    delete this->pinkGhost;
+    delete this->greenGhost;
+}
+
 NinmanGame::NinmanGame(const char* player_name) {
     //clear screen
     clear(screen);
@@ -21,34 +29,28 @@ NinmanGame::NinmanGame(const char* player_name) {
     this->Wait();
 }
 
-void NinmanGame::DeleteFruit() {
-    for (int a = 0; a < linhas; a++)
-        for (int b = 0; b < colunas; b++)
-            if (matriz[a][b] == 'x')
-                matriz[a][b] = '0';
-}
-
-void NinmanGame::setNinmanPosition() {
-    for (int a = 0; a < linhas; a++)
-        for (int b = 0; b < colunas; b++)
-            if (matriz[a][b] == 'p') {
-                this->ninman.x = a;
-                this->ninman.y = b;
-                matriz[a][b] = 0;
-            }
-}
-
 void NinmanGame::init() {
-    //NinmanConfig::getLab();
-    this->LoadLab(NinmanConfig::getLab());
+
+    this->map = new NinManMap (NinmanConfig::getLab());
+    this->remainingDots = map->getNumberOfDots();
+
+    this->linhas = map->getNumberOfLines();
+    this->colunas = map->getNumberOfColumns();
+
+    this->orangeGhost = new Ghost (map);
+    this->blueGhost = new Ghost (map);
+    this->redGhost = new Ghost (map);
+    this->pinkGhost = new Ghost (map);
+    this->greenGhost = new Ghost (map);
+
     this->setNinmanPosition();
     this->setGhostsPositions();
     this->ninman.loadBitmaps(NinmanConfig::getNimanColor());
-    this->ghost.setBitmap(0, 0);
-    this->ghost1.setBitmap(24, 0);
-    this->ghost2.setBitmap(48, 0);
-    this->ghost3.setBitmap(0, 23);
-    this->ghost4.setBitmap(24, 23);
+    this->orangeGhost->setBitmap(0, 0);
+    this->blueGhost->setBitmap(24, 0);
+    this->redGhost->setBitmap(48, 0);
+    this->pinkGhost->setBitmap(0, 23);
+    this->greenGhost->setBitmap(24, 23);
     this->DrawLab();
     BITMAP * temp = load_bitmap("Imagens/GetReady.bmp", NULL);
     draw_sprite(screen, temp, 200, 300 - 43);
@@ -57,88 +59,33 @@ void NinmanGame::init() {
     rest(3000);
 }
 
-void NinmanGame::NewFruit() {
-    int x = rand() % linhas, y = rand() % colunas;
-    while (matriz[x][y] != '0') {
-        x = rand() % linhas;
-        y = rand() % colunas;
-    }
-    matriz[x][y] = 'x';
+void inline NinmanGame::DeleteFruit() {
+    this->map->replacePointValue('x','0');
 }
 
-double NinmanGame::ManhattanDist(Point a, Point b) {
-    int x1x2, y1y2;
-    x1x2 = ((a.x - b.x) > 0) ? (a.x - b.x) : (a.x - b.x) * -1;
-    y1y2 = ((a.y - b.y) > 0) ? (a.y - b.y) : (a.y - b.y) * -1;
-    return x1x2 + y1y2;
-}
-
-bool NinmanGame::alreadyInList(std::list<Point>) {
-}
-
-std::list<Point> NinmanGame::calcPath() {
-    int dist, shortest = -1;
-    Point bestMove;
-    int x = ghost.x;
-    int y = ghost.y;
-    std::list<Point> ghost_path;
-    while (shortest != 0 && ghost_path.size() < 100) {
-        if (y < colunas - 1 && matriz[x][y + 1] != '1') {
-            bestMove.x = x;
-            bestMove.y = y + 1;
-            shortest = ManhattanDist(bestMove, this->ninman);
-        }
-        if (x < linhas - 1 && matriz[x + 1][y] != '1') {
-            dist = ManhattanDist(Point(x + 1, y), this->ninman);
-            if (dist < shortest || shortest < 0) {
-                bestMove.x = x + 1;
-                bestMove.y = y;
-                shortest = dist;
-            }
-        }
-        if (y > 0 && matriz[x][y - 1] != '1') {
-            dist = ManhattanDist(Point(x, y - 1), this->ninman);
-            if (dist < shortest || shortest < 0) {
-                bestMove.x = x;
-                bestMove.y = y - 1;
-                shortest = dist;
-            }
-        }
-        if (x > 0 && matriz[x - 1][y] != '1') {
-            dist = ManhattanDist(Point(x - 1, y), this->ninman);
-            if (dist < shortest || shortest < 0) {
-                bestMove.x = x - 1;
-                bestMove.y = y;
-                shortest = dist;
-            }
-        }
-        ghost_path.push_back(bestMove);
-        x = bestMove.x;
-        y = bestMove.y;
-        shortest = -1;
-    }
-    return ghost_path;
+void NinmanGame::setNinmanPosition() {
+    this->ninman.setPoint(this->map->getNinmanInitialPosition());
 }
 
 bool NinmanGame::Venceu() {
     if (!power) {
-        if (ghost.x == ninman.x && ghost.y == ninman.y) {
+        if (orangeGhost->x == ninman.x && orangeGhost->y == ninman.y) {
             vida--;
             return true;
         }
-        if (ghost1.x == ninman.x && ghost1.y == ninman.y) {
+        if (blueGhost->x == ninman.x && blueGhost->y == ninman.y) {
             vida--;
             return true;
         }
-        if (ghost2.x == ninman.x && ghost2.y == ninman.y) {
+        if (redGhost->x == ninman.x && redGhost->y == ninman.y) {
             vida--;
             return true;
         }
-        if (ghost3.x == ninman.x && ghost3.y == ninman.y) {
+        if (pinkGhost->x == ninman.x && pinkGhost->y == ninman.y) {
             vida--;
             return true;
         }
-        if (ghost4.x == ninman.x && ghost4.y == ninman.y) {
+        if (greenGhost->x == ninman.x && greenGhost->y == ninman.y) {
             vida--;
             return true;
         }
@@ -146,16 +93,16 @@ bool NinmanGame::Venceu() {
             venceu = -1;
         }
     } else {
-        if (ghost.x == ninman.x && ghost.y == ninman.y)
-            ghost.setEyesBitmap();
-        if (ghost1.x == ninman.x && ghost1.y == ninman.y)
-            ghost1.setEyesBitmap();
-        if (ghost2.x == ninman.x && ghost2.y == ninman.y)
-            ghost2.setEyesBitmap();
-        if (ghost3.x == ninman.x && ghost3.y == ninman.y)
-            ghost3.setEyesBitmap();
-        if (ghost4.x == ninman.x && ghost4.y == ninman.y)
-            ghost4.setEyesBitmap();
+        if (orangeGhost->x == ninman.x && orangeGhost->y == ninman.y)
+           orangeGhost->setEyesBitmap();
+        if (blueGhost->x == ninman.x && blueGhost->y == ninman.y)
+            blueGhost->setEyesBitmap();
+        if (redGhost->x == ninman.x && redGhost->y == ninman.y)
+            redGhost->setEyesBitmap();
+        if (pinkGhost->x == ninman.x && pinkGhost->y == ninman.y)
+            pinkGhost->setEyesBitmap();
+        if (greenGhost->x == ninman.x && greenGhost->y == ninman.y)
+            greenGhost->setEyesBitmap();
     }
     if (CheckWinner())
         venceu = 1;
@@ -262,98 +209,70 @@ Point NinmanGame::RandomMove(Point ghost) {
 }
  */
 
-bool NinmanGame::CheckWinner() {
-    bool venceu = true;
-    for (int a = 0; a < linhas; a++) {
-        for (int b = 0; b < colunas; b++) {
-            if (matriz[a][b] == '2') {
-                return false;
-            }
-        }
-    }
-    return venceu;
+inline bool NinmanGame::CheckWinner() {
+    return this->remainingDots == 0;
 }
 
 void NinmanGame::setGhostsPositions() {
-    for (int a = 0; a < linhas; a++) {
-        for (int b = 0; b < colunas; b++) {
-            if (matriz[a][b] == 'g') {
-                ghost.x = a;
-                ghost.y = b;
-                matriz[a][b] = 0;
-            }
-            if (matriz[a][b] == 'h') {
-                ghost1.x = a;
-                ghost1.y = b;
-                matriz[a][b] = 0;
-            }
-            if (matriz[a][b] == 'j') {
-                ghost2.x = a;
-                ghost2.y = b;
-                matriz[a][b] = 0;
-            }
-            if (matriz[a][b] == 'k') {
-                ghost3.x = a;
-                ghost3.y = b;
-                matriz[a][b] = 0;
-            }
-            if (matriz[a][b] == 'l') {
-                ghost4.x = a;
-                ghost4.y = b;
-                matriz[a][b] = 0;
-            }
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            orangeGhost->setPoint(this->map->getOrangeGhostInitialPosition());
+            blueGhost->setPoint(this->map->getBlueGhostInitialPosition());
+            redGhost->setPoint(this->map->getRedGhostInitialPosition());
+            pinkGhost->setPoint(this->map->getPinkGhostInitialPosition());
+            greenGhost->setPoint(this->map->getGreenGhostInitialPosition());
         }
     }
 }
 
 int NinmanGame::getCoordinateType(int x, int y) {
     //invalid coordinate
-    if (y >= colunas || x >= linhas || x < 0 || y < 0 || matriz[x][y] == '1')
+    if (!map->isValidCoordinate(x,y))
         return -1;
-    if (matriz[ninman.x][ninman.y] == '0')
+    if (map->getPointValue(x,y) == '0')
         return 0;
-    if (matriz[ninman.x][ninman.y] == 'x')
+    else if (map->getPointValue(x,y) == 'x')
         return 1;
-    if (matriz[ninman.x][ninman.y] == '2')
+    else if (map->getPointValue(x,y) == '2')
         return 2;
-    if (matriz[ninman.x][ninman.y] == '3')
+    else if (map->getPointValue(x,y) == '3')
         return 3;
 }
 
 int NinmanGame::move(int NextMove) {
     if (NextMove != 0) {
         int tempSentido = sentido;
-        if (NextMove == direita && getCoordinateType(ninman.x, ninman.y + 1) >= 0)
+        if (NextMove == direita && map->isValidCoordinate(ninman.x +1,ninman.y))
             sentido = direita;
-        else if (NextMove == subiu && getCoordinateType(ninman.x - 1, ninman.y) >= 0)
+        else if (NextMove == subiu && map->isValidCoordinate(ninman.x,ninman.y-1))
             sentido = subiu;
-        else if (NextMove == esquerda && getCoordinateType(ninman.x, ninman.y - 1) >= 0)
+        else if (NextMove == esquerda && map->isValidCoordinate(ninman.x - 1,ninman.y))
             sentido = esquerda;
-        else if (NextMove == desceu && getCoordinateType(ninman.x + 1, ninman.y) >= 0)
+        else if (NextMove == desceu && map->isValidCoordinate(ninman.x,ninman.y +1 ))
             sentido = desceu;
         //sentido has changed, pre-move worked
         if (tempSentido != sentido)
             NextMove = 0;
     }
-    if (sentido == direita && getCoordinateType(ninman.x, ninman.y + 1) >= 0)
-        ninman.y += 1;
-    else if (sentido == subiu && getCoordinateType(ninman.x - 1, ninman.y) >= 0)
-        ninman.x -= 1;
-    else if (sentido == esquerda && getCoordinateType(ninman.x, ninman.y - 1) >= 0)
-        ninman.y -= 1;
-    else if (sentido == desceu && getCoordinateType(ninman.x + 1, ninman.y) >= 0)
+    if (sentido == direita && map->isValidCoordinate(ninman.x +1,ninman.y))
         ninman.x += 1;
+    else if (sentido == subiu && map->isValidCoordinate(ninman.x,ninman.y -1))
+        ninman.y -= 1;
+    else if (sentido == esquerda && map->isValidCoordinate(ninman.x -1,ninman.y))
+        ninman.x -= 1;
+    else if (sentido == desceu && map->isValidCoordinate(ninman.x,ninman.y +1))
+        ninman.y += 1;
 
-    if (ninman.y == colunas - 1)
+    if (ninman.y == linhas - 1)
         ninman.y = 0;
     else if (ninman.x == 0)
-        ninman.x = linhas - 1;
+        ninman.x = colunas - 1;
     else if (ninman.y == 0)
-        ninman.y = colunas - 1;
-    else if (ninman.x == linhas - 1)
+        ninman.y = linhas - 1;
+    else if (ninman.x == colunas - 1)
         ninman.x = 0;
 
-    switch (getCoordinateType(ninman.x, ninman.y)) {
+    switch (getCoordinateType(ninman.x,ninman.y)) {
         case 0:
             break;
         case 1:
@@ -362,7 +281,7 @@ int NinmanGame::move(int NextMove) {
         case 2:
         {
             this->pontos += 10;
-            //this->sound.play("eat");
+            this->remainingDots--;
         }
             break;
         case 3:
@@ -371,7 +290,7 @@ int NinmanGame::move(int NextMove) {
         default:
             break;
     }
-    matriz[ninman.x][ninman.y] = 'p';
+    this->map->setPointValue(ninman.x,ninman.y,'0');
     return NextMove;
 }
 
@@ -471,25 +390,6 @@ void NinmanGame::MoverFantasma5() {
     }
 }
  */
-void NinmanGame::LoadLab(const char* file_name) {
-    std::ifstream arquivo;
-    arquivo.open(file_name);
-    std::stack <std::string>aux;
-    char* linha = new char [1024];
-    while (arquivo) {
-        arquivo.getline(linha, 1024);
-        aux.push(linha);
-    }
-    aux.pop();
-    linhas = aux.size();
-    matriz = new std::string [linhas];
-    for (int i = linhas - 1; i >= 0; i--) {
-        matriz[i] = aux.top();
-        aux.pop();
-    }
-    colunas = matriz[0].size();
-    delete linha;
-}
 
 void NinmanGame::DrawLab() {
     BITMAP *mapa = create_bitmap(colunas * 26, linhas * 26 + 20);
@@ -498,51 +398,51 @@ void NinmanGame::DrawLab() {
     BITMAP * bola = load_bitmap("Imagens/bola.bmp", NULL);
     BITMAP * fruit = load_bitmap("Imagens/fruit.bmp", NULL);
     clear(mapa);
-    for (int a = 0; a < colunas; a++) {
-        for (int b = 0; b < linhas; b++) {
-            if (matriz[b][a] == '1')
-                draw_sprite(mapa, bloco, a * 26, b * 26);
-            if (matriz[b][a] == '2')
-                draw_sprite(mapa, bola2, a * 26, b * 26);
-            if (matriz[b][a] == '3')
-                draw_sprite(mapa, bola, a * 26, b * 26);
-            if (matriz[b][a] == 'x')
-                draw_sprite(mapa, fruit, a * 26, b * 26);
-            if (b == ghost.x && a == ghost.y)
-                draw_sprite(mapa, ghost.Bit_ghost, a * 26, b * 26);
-            if (b == ghost1.x && a == ghost1.y)
-                draw_sprite(mapa, ghost1.Bit_ghost, a * 26, b * 26);
-            if (b == ghost2.x && a == ghost2.y)
-                draw_sprite(mapa, ghost2.Bit_ghost, a * 26, b * 26);
-            if (b == ghost3.x && a == ghost3.y)
-                draw_sprite(mapa, ghost3.Bit_ghost, a * 26, b * 26);
-            if (b == ghost4.x && a == ghost4.y)
-                draw_sprite(mapa, ghost4.Bit_ghost, a * 26, b * 26);
-            if (b == ninman.x && a == ninman.y) {
-                if (sentido == direita) {
+    for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+            if (this->map->getPointValue(j,i) == '1')
+                draw_sprite(mapa, bloco, j * 26, i * 26);
+            if (this->map->getPointValue(j,i) == '2')
+                draw_sprite(mapa, bola2, j * 26, i * 26);
+            if (this->map->getPointValue(j,i) == '3')
+                draw_sprite(mapa, bola, j * 26, i * 26);
+            if (this->map->getPointValue(j,i) == 'x')
+                draw_sprite(mapa, fruit, j * 26, i * 26);
+            if (j == orangeGhost->x && i == orangeGhost->y)
+                draw_sprite(mapa, orangeGhost->Bit_ghost, j * 26, i * 26);
+            if (j == blueGhost->x && i == blueGhost->y)
+                draw_sprite(mapa, blueGhost->Bit_ghost, j * 26, i * 26);
+            if (j == redGhost->x && i == redGhost->y)
+                draw_sprite(mapa, redGhost->Bit_ghost, j * 26, i * 26);
+            if (j == pinkGhost->x && i == pinkGhost->y)
+                draw_sprite(mapa, pinkGhost->Bit_ghost, j * 26, i * 26);
+            if (j == greenGhost->x && i == greenGhost->y)
+                draw_sprite(mapa, greenGhost->Bit_ghost, j * 26, i * 26);
+            if (j == ninman.x && i == ninman.y) {
+                 if (sentido == direita) {
                     switch (1) {
                         case 0:
-                            draw_sprite(mapa, ninman.direita1, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita1, j * 26, i * 26);
                             rest(25);
                             break;
                         case 1:
-                            draw_sprite(mapa, ninman.direita2, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita2, j * 26, i * 26);
                             rest(25);
                             break;
                         case 2:
-                            draw_sprite(mapa, ninman.direita3, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita3, j * 26, i * 26);
                             rest(25);
                             break;
                         case 3:
-                            draw_sprite(mapa, ninman.direita4, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita4, j * 26, i * 26);
                             rest(25);
                             break;
                         case 4:
-                            draw_sprite(mapa, ninman.direita5, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita5, j * 26, i * 26);
                             rest(25);
                             break;
                         case 5:
-                            draw_sprite(mapa, ninman.direita6, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.direita6, j * 26, i * 26);
                             rest(25);
                             break;
                     }
@@ -550,27 +450,27 @@ void NinmanGame::DrawLab() {
                 if (sentido == esquerda) {
                     switch (1) {
                         case 0:
-                            draw_sprite(mapa, ninman.esquerda1, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda1, j * 26, i * 26);
                             rest(25);
                             break;
                         case 1:
-                            draw_sprite(mapa, ninman.esquerda2, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda2, j * 26, i * 26);
                             rest(25);
                             break;
                         case 2:
-                            draw_sprite(mapa, ninman.esquerda3, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda3, j * 26, i * 26);
                             rest(25);
                             break;
                         case 3:
-                            draw_sprite(mapa, ninman.esquerda4, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda4, j * 26, i * 26);
                             rest(25);
                             break;
                         case 4:
-                            draw_sprite(mapa, ninman.esquerda5, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda5, j * 26, i * 26);
                             rest(25);
                             break;
                         case 5:
-                            draw_sprite(mapa, ninman.esquerda6, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.esquerda6, j * 26, i * 26);
                             rest(25);
                             break;
                     }
@@ -578,27 +478,27 @@ void NinmanGame::DrawLab() {
                 if (sentido == subiu) {
                     switch (1) {
                         case 0:
-                            draw_sprite(mapa, ninman.cima1, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima1, j * 26, i * 26);
                             rest(25);
                             break;
                         case 1:
-                            draw_sprite(mapa, ninman.cima2, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima2, j * 26, i * 26);
                             rest(25);
                             break;
                         case 2:
-                            draw_sprite(mapa, ninman.cima3, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima3, j * 26, i * 26);
                             rest(25);
                             break;
                         case 3:
-                            draw_sprite(mapa, ninman.cima4, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima4, j * 26, i * 26);
                             rest(25);
                             break;
                         case 4:
-                            draw_sprite(mapa, ninman.cima5, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima5, j * 26, i * 26);
                             rest(25);
                             break;
                         case 5:
-                            draw_sprite(mapa, ninman.cima6, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.cima6, j * 26, i * 26);
                             rest(25);
                             break;
                     }
@@ -606,27 +506,27 @@ void NinmanGame::DrawLab() {
                 if (sentido == desceu) {
                     switch (1) {
                         case 0:
-                            draw_sprite(mapa, ninman.baixo1, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo1, j * 26, i * 26);
                             rest(25);
                             break;
                         case 1:
-                            draw_sprite(mapa, ninman.baixo2, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo2, j * 26, i * 26);
                             rest(25);
                             break;
                         case 2:
-                            draw_sprite(mapa, ninman.baixo3, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo3, j * 26, i * 26);
                             rest(25);
                             break;
                         case 3:
-                            draw_sprite(mapa, ninman.baixo4, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo4, j * 26, i * 26);
                             rest(25);
                             break;
                         case 4:
-                            draw_sprite(mapa, ninman.baixo5, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo5, j * 26, i * 26);
                             rest(25);
                             break;
                         case 5:
-                            draw_sprite(mapa, ninman.baixo6, a * 26, b * 26);
+                            draw_sprite(mapa, ninman.baixo6, j * 26, i * 26);
                             break;
                     }
                 }
@@ -664,22 +564,18 @@ void NinmanGame::run() {
             ninman.setNextMove(move(ninman.getNextMove()));
             reset = Venceu();
             if (reset) {
-                //pilha1.clear();
-                //pilha2.clear();
-                //pilha3.clear();
                 this->sound.stop("siren");
                 sentido = esquerda;
                 if (vida > 0) {
                     init();
-                    ghost_path.clear();
                     this->sound.play("siren", true);
                 }
             }
             if (!fruit)
                 tfruit++;
             if (tfruit > 100 && !fruit) {
-                NewFruit();
-                fruit = true;
+                //this->map->showFruit();
+                //fruit = true;
             }
             if (fruit) {
                 tfruit = tfruit - 2;
@@ -687,29 +583,23 @@ void NinmanGame::run() {
                     DeleteFruit();
             }
             if (!power) {
-                //if (ghost_path.empty())
-                //ghost_path = this->calcPath();
-                //ghost = ghost_path.front();
-                //ghost_path.pop_front();
-                //pilha1 = moveFantasma1(pilha1);
-                //pilha2 = MoverFantasma2(pilha2);
-                //pilha3 = MoverFantasma3(pilha3);
-                //MoverFantasma5();
+                orangeGhost->move(this->ninman);
+                blueGhost->move(this->ninman);
+                redGhost->move(this->ninman);
+                greenGhost->move(this->ninman);
+                pinkGhost->move(this->ninman);
+
             } else {
                 //ghost = RandomMove(ghost);
-                //ghost1 = RandomMove(ghost1);
-                //ghost2 = RandomMove(ghost2);
-                //ghost3 = RandomMove(ghost3);
-                //ghost4 = RandomMove(ghost4);
                 powertime++;
                 if (powertime > 25) {
                     powertime = 0;
                     power = false;
-                    this->ghost.setBitmap(0, 0);
-                    this->ghost1.setBitmap(24, 0);
-                    this->ghost2.setBitmap(48, 0);
-                    this->ghost3.setBitmap(0, 23);
-                    this->ghost4.setBitmap(24, 23);
+                    orangeGhost->setBitmap(0, 0);
+                    this->blueGhost->setBitmap(24, 0);
+                    this->redGhost->setBitmap(48, 0);
+                    this->pinkGhost->setBitmap(0, 23);
+                    this->greenGhost->setBitmap(24, 23);
                 }
             }
             endwait = clock() + 0.2 * CLOCKS_PER_SEC;

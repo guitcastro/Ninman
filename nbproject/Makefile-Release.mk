@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Ninman.o \
 	${OBJECTDIR}/Ghost.o \
 	${OBJECTDIR}/NinmanGame.o \
+	${OBJECTDIR}/NinManMap.o \
 	${OBJECTDIR}/NinmanMenu.o \
 	${OBJECTDIR}/NinmanGameGraph.o
 
@@ -115,6 +116,11 @@ ${OBJECTDIR}/NinmanGame.o: NinmanGame.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanGame.o NinmanGame.cpp
+
+${OBJECTDIR}/NinManMap.o: NinManMap.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinManMap.o NinManMap.cpp
 
 ${OBJECTDIR}/NinmanMenu.o: NinmanMenu.cpp 
 	${MKDIR} -p ${OBJECTDIR}

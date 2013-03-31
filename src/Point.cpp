@@ -5,14 +5,14 @@
  * Created on 28 de Novembro de 2011, 19:54
  */
 
-#include "Point.h"
+#include "header/Point.h"
 
 Point::Point() {
+    this->x=0;
+    this->y=0;
 }
 
 Point::Point(const Point& orig) {
-    this->x = orig.x;
-    this->y = orig.y;
 }
 
 Point::~Point() {
@@ -23,7 +23,6 @@ Point::Point(int x, int y) {
     this->y = y;
 }
 
-void Point::setPoint(Point p){
-    this->x = p.x;
-    this->y = p.y;
+bool Point::operator==(Point &point) {
+    return (this->x == point.x && this->y == point.y);
 }
