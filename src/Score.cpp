@@ -5,7 +5,7 @@
  * Created on April 27, 2011, 9:34 PM
  */
 
-#include "header/Score.h"
+#include "Score.h"
 
 //constructors and destructors
 

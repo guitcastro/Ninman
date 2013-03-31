@@ -5,7 +5,7 @@
  * Created on 29 de Novembro de 2011, 01:49
  */
 
-#include "header/Sound.h"
+#include "Sound.h"
 
 Sound::Sound() {
     this->siren = load_sample("Sound/siren.wav");

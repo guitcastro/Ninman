@@ -1,4 +1,4 @@
-#include "header/NinmanConfig.h"
+#include "NinmanConfig.h"
 
 /*
  * Hold the game data configuration

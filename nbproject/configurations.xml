@@ -4,33 +4,33 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Arquivos de cabeçalho"
                    projectFiles="true">
-      <itemPath>Ghost.h</itemPath>
-      <itemPath>Ninman.h</itemPath>
-      <itemPath>NinmanConfig.h</itemPath>
-      <itemPath>NinmanGame.h</itemPath>
-      <itemPath>NinmanGameGraph.h</itemPath>
-      <itemPath>NinmanMenu.h</itemPath>
-      <itemPath>Point.h</itemPath>
-      <itemPath>Score.h</itemPath>
-      <itemPath>Sound.h</itemPath>
-      <itemPath>Thread.h</itemPath>
+      <itemPath>src/Ghost.h</itemPath>
+      <itemPath>src/Ninman.h</itemPath>
+      <itemPath>src/NinmanConfig.h</itemPath>
+      <itemPath>src/NinmanGame.h</itemPath>
+      <itemPath>src/NinmanGameGraph.h</itemPath>
+      <itemPath>src/NinmanMenu.h</itemPath>
+      <itemPath>src/Point.h</itemPath>
+      <itemPath>src/Score.h</itemPath>
+      <itemPath>src/Sound.h</itemPath>
+      <itemPath>src/Thread.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de código-fonte"
                    projectFiles="true">
-      <itemPath>Ghost.cpp</itemPath>
-      <itemPath>NinManMap.cpp</itemPath>
-      <itemPath>NinManMap.h</itemPath>
-      <itemPath>Ninman.cpp</itemPath>
-      <itemPath>NinmanConfig.cpp</itemPath>
-      <itemPath>NinmanGame.cpp</itemPath>
-      <itemPath>NinmanGameGraph.cpp</itemPath>
-      <itemPath>NinmanMenu.cpp</itemPath>
-      <itemPath>Point.cpp</itemPath>
-      <itemPath>Score.cpp</itemPath>
-      <itemPath>Sound.cpp</itemPath>
-      <itemPath>Thread.cpp</itemPath>
-      <itemPath>main.cpp</itemPath>
+      <itemPath>src/Ghost.cpp</itemPath>
+      <itemPath>src/NinManMap.cpp</itemPath>
+      <itemPath>src/NinManMap.h</itemPath>
+      <itemPath>src/Ninman.cpp</itemPath>
+      <itemPath>src/NinmanConfig.cpp</itemPath>
+      <itemPath>src/NinmanGame.cpp</itemPath>
+      <itemPath>src/NinmanGameGraph.cpp</itemPath>
+      <itemPath>src/NinmanMenu.cpp</itemPath>
+      <itemPath>src/Point.cpp</itemPath>
+      <itemPath>src/Score.cpp</itemPath>
+      <itemPath>src/Sound.cpp</itemPath>
+      <itemPath>src/Thread.cpp</itemPath>
+      <itemPath>src/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Arquivos de recurso"

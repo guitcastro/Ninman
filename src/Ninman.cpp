@@ -5,7 +5,7 @@
  * Created on 28 de Novembro de 2011, 23:12
  */
 
-#include "header/Ninman.h"
+#include "Ninman.h"
 
 Ninman::Ninman() {
 }
@@ -121,9 +121,4 @@ void Ninman::setNextMove(int x) {
 
 int Ninman::getNextMove() {
     return this->NextMove;
-}
-
-void Ninman::setNinmanPosition (Point position){
-    this->x = position.x;
-    this->y = position.y;
 }

@@ -5,7 +5,7 @@
  * Created on 28 de Novembro de 2011, 21:15
  */
 
-#include "header/NinmanGameGraph.h"
+#include "NinmanGameGraph.h"
 
 NinmanGameGraph::NinmanGameGraph() {
 }
@@ -55,10 +55,3 @@ void NinmanGameGraph::DrawOptions(int y) {
     destroy_bitmap(menu);
     destroy_bitmap(pacman);
 }
-
-void NinmanGameGraph::drawInitGame() {
-    BITMAP * getReady = load_bitmap("Imagens/GetReady.bmp", NULL);
-    draw_sprite(screen, getReady, 200, 300 - 43);
-    destroy_bitmap(getReady);
-}
-

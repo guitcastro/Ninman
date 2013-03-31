@@ -34,18 +34,18 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Sound.o \
-	${OBJECTDIR}/Thread.o \
-	${OBJECTDIR}/Point.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/NinmanConfig.o \
-	${OBJECTDIR}/Score.o \
-	${OBJECTDIR}/Ninman.o \
-	${OBJECTDIR}/Ghost.o \
-	${OBJECTDIR}/NinmanGame.o \
-	${OBJECTDIR}/NinManMap.o \
-	${OBJECTDIR}/NinmanMenu.o \
-	${OBJECTDIR}/NinmanGameGraph.o
+	${OBJECTDIR}/src/NinmanMenu.o \
+	${OBJECTDIR}/src/main.o \
+	${OBJECTDIR}/src/Thread.o \
+	${OBJECTDIR}/src/NinmanGame.o \
+	${OBJECTDIR}/src/Score.o \
+	${OBJECTDIR}/src/Sound.o \
+	${OBJECTDIR}/src/NinmanGameGraph.o \
+	${OBJECTDIR}/src/Ninman.o \
+	${OBJECTDIR}/src/NinmanConfig.o \
+	${OBJECTDIR}/src/Point.o \
+	${OBJECTDIR}/src/Ghost.o \
+	${OBJECTDIR}/src/NinManMap.o
 
 
 # C Compiler Flags
@@ -72,65 +72,65 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ninman: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ninman ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/Sound.o: Sound.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/NinmanMenu.o: src/NinmanMenu.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Sound.o Sound.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/NinmanMenu.o src/NinmanMenu.cpp
 
-${OBJECTDIR}/Thread.o: Thread.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/main.o: src/main.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Thread.o Thread.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.cpp
 
-${OBJECTDIR}/Point.o: Point.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Thread.o: src/Thread.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Point.o Point.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Thread.o src/Thread.cpp
 
-${OBJECTDIR}/main.o: main.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/NinmanGame.o: src/NinmanGame.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/NinmanGame.o src/NinmanGame.cpp
 
-${OBJECTDIR}/NinmanConfig.o: NinmanConfig.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Score.o: src/Score.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanConfig.o NinmanConfig.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Score.o src/Score.cpp
 
-${OBJECTDIR}/Score.o: Score.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Sound.o: src/Sound.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Score.o Score.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Sound.o src/Sound.cpp
 
-${OBJECTDIR}/Ninman.o: Ninman.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/NinmanGameGraph.o: src/NinmanGameGraph.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Ninman.o Ninman.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/NinmanGameGraph.o src/NinmanGameGraph.cpp
 
-${OBJECTDIR}/Ghost.o: Ghost.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Ninman.o: src/Ninman.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Ghost.o Ghost.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Ninman.o src/Ninman.cpp
 
-${OBJECTDIR}/NinmanGame.o: NinmanGame.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/NinmanConfig.o: src/NinmanConfig.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanGame.o NinmanGame.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/NinmanConfig.o src/NinmanConfig.cpp
 
-${OBJECTDIR}/NinManMap.o: NinManMap.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Point.o: src/Point.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinManMap.o NinManMap.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Point.o src/Point.cpp
 
-${OBJECTDIR}/NinmanMenu.o: NinmanMenu.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/Ghost.o: src/Ghost.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanMenu.o NinmanMenu.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Ghost.o src/Ghost.cpp
 
-${OBJECTDIR}/NinmanGameGraph.o: NinmanGameGraph.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/NinManMap.o: src/NinManMap.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/NinmanGameGraph.o NinmanGameGraph.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/NinManMap.o src/NinManMap.cpp
 
 # Subprojects
 .build-subprojects:

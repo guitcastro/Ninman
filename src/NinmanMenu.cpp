@@ -1,4 +1,4 @@
-#include "header/NinmanMenu.h"
+#include "NinmanMenu.h"
 
 /*
  * Start Allegro and draw the game Menu

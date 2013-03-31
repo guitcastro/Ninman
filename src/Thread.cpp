@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "header/Thread.h"
+#include "Thread.h"
 
 Thread::Thread() {
 }
@@ -16,6 +16,7 @@ void *Thread::entryPoint(void *pthis) {
 }
 
 void Thread::Start() {
+        int nRet;
 
         if (pthread_create(&m_threadId, NULL, entryPoint, this) != 0) {
         }
